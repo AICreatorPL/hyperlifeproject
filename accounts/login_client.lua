@@ -28,7 +28,7 @@ function showLogin()
             guiSetText(infoLbl, "Podaj poprawne dane!")
             return
         end
-        triggerServerEvent("loginAccount", localPlayer, user, pass)
+        triggerServerEvent("hlrpg:login", localPlayer, user, pass)
     end, false)
 
     addEventHandler("onClientGUIClick", registerBtn, function()
@@ -38,14 +38,14 @@ function showLogin()
             guiSetText(infoLbl, "Podaj poprawne dane!")
             return
         end
-        triggerServerEvent("registerAccount", localPlayer, user, pass)
+        triggerServerEvent("hlrpg:register", localPlayer, user, pass)
     end, false)
 end
 
 addEventHandler("onClientResourceStart", resourceRoot, showLogin)
 
-addEvent("loginResult", true)
-addEventHandler("loginResult", root, function(ok, msg)
+addEvent("hlrpg:loginResult", true)
+addEventHandler("hlrpg:loginResult", root, function(ok, msg)
     guiSetText(infoLbl, msg or "")
     if ok then
         setTimer(function()
@@ -58,8 +58,8 @@ addEventHandler("loginResult", root, function(ok, msg)
     end
 end)
 
-addEvent("registerResult", true)
-addEventHandler("registerResult", root, function(ok, msg)
+addEvent("hlrpg:registerResult", true)
+addEventHandler("hlrpg:registerResult", root, function(ok, msg)
     guiSetText(infoLbl, msg or "")
     if ok then
         setTimer(function()
