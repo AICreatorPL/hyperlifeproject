@@ -1,0 +1,89 @@
+body {
+    background: rgba(12,18,24,0.92);
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+#loginPanel {
+    width: 340px;
+    margin: 80px auto 0 auto;
+    background: #232a3a;
+    border-radius: 15px;
+    box-shadow: 0 0 24px #1118;
+    padding: 40px 30px 30px 30px;
+    color: #fff;
+    text-align: center;
+}
+
+#logo {
+    font-size: 2.1em;
+    font-weight: bold;
+    color: #00d08c;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.tabs button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1em;
+    margin: 0 10px;
+    padding: 8px 22px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.tabs button.active {
+    border-bottom: 2px solid #00d08c;
+    color: #00d08c;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input[type="text"], input[type="password"] {
+    width: 90%;
+    margin: 7px 0;
+    padding: 10px;
+    border-radius: 7px;
+    border: none;
+    font-size: 1.13em;
+    background: #283045;
+    color: #eee;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: #00d08c;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+    background: #00b47b;
+}
+
+.msg {
+    margin-top: 10px;
+    min-height: 20px;
+    color: #ff7070;
+    font-size: 0.97em;
+}

@@ -1,0 +1,4 @@
+<map edf:definitions="editor_main">
+    <!-- Respawn: park na trawniku przed budynkiem urzędu LS, patrząc na wejście -->
+    <spawnpoint posX="1469.5" posY="-1764.0" posZ="18.8" rot="180" skin="0" />
+</map>

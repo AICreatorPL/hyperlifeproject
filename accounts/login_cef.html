@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>HL-RPG - Logowanie</title>
+    <link rel="stylesheet" href="login_cef.css">
+</head>
+<body>
+    <div id="loginPanel">
+        <div id="logo">HL-RPG</div>
+        <div class="tabs">
+            <button id="loginTab" class="active" onclick="showTab('login')">Logowanie</button>
+            <button id="registerTab" onclick="showTab('register')">Rejestracja</button>
+        </div>
+        <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Nazwa użytkownika" autocomplete="off" required>
+            <input type="password" id="loginPassword" placeholder="Hasło" autocomplete="off" required>
+            <button type="submit">Zaloguj się</button>
+            <div class="msg" id="loginMsg"></div>
+        </form>
+        <form id="registerForm" style="display:none;">
+            <input type="text" id="registerUsername" placeholder="Nazwa użytkownika" autocomplete="off" required>
+            <input type="password" id="registerPassword" placeholder="Hasło" autocomplete="off" required>
+            <button type="submit">Zarejestruj się</button>
+            <div class="msg" id="registerMsg"></div>
+        </form>
+    </div>
+    <script src="login_cef.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<meta>
+    <info author="AICreatorPL" name="HL-RPG" version="0.1" type="script" description="Prosty system logowania/rejestracji i baza pod RPG (GUI, CEF, system kont, spawn)"/>
+    <!-- Serwerowe skrypty Lua -->
+    <script src="core/main.lua" type="server" />
+    <script src="accounts/accounts.lua" type="server" />
+    <!-- Klientowe skrypty Lua (GUI i CEF) -->
+    <script src="accounts/login_client.lua" type="client" />
+    <script src="hud/hud.lua" type="client" />
+    <!-- Pliki CEF (HTML, CSS, JS) - do rozwoju lub testów -->
+    <html src="accounts/login_cef.html" type="client" />
+    <file src="accounts/login_cef.html" />
+    <file src="accounts/login_cef.css" />
+    <file src="accounts/login_cef.js" />
+    <html src="hud/hud_cef.html" type="client" />
+    <file src="hud/hud_cef.html" />
+    <file src="hud/style.css" />
+    <html src="panel_gracza/panel_cef.html" type="client" />
+    <file src="panel_gracza/panel_cef.html" />
+    <html src="admin_panel/admin_cef.html" type="client" />
+    <file src="admin_panel/admin_cef.html" />
+    <!-- Pliki danych i konfiguracyjne -->
+    <file src="accounts/accounts.xml" />
+    <file src="core/config.xml" />
+    <!-- Mapy -->
+    <map src="maps/los_santos_main_spawn.map" />
+</meta>
