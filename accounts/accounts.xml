@@ -1,3 +1,9 @@
 <accounts>
-    <account username="admin" password="admin"></account>
+    <account username="admin" password="admin">
+        <character pid="0" nickname="admin" />
+    </account>
+    <account username="player1" password="pass">
+        <character pid="1" nickname="player1" />
+        <character pid="2" nickname="Janek" />
+    </account>
 </accounts>

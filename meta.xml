@@ -4,6 +4,7 @@
     <script src="core/main.lua" type="server" />
     <script src="accounts/accounts.lua" type="server" />
 	<script src="core/chat/chat.lua" type="server"/>
+
     <!-- Klientowe skrypty Lua (GUI i CEF) -->
     <script src="accounts/login_client.lua" type="client" />
     <script src="hud/hud.lua" type="client" />

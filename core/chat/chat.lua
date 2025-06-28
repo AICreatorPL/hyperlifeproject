@@ -1,102 +1,104 @@
--- HL-RPG: Czat lokalny, globalny i /admins z kolorami i wykrywaniem Ownera po loginie/serialu
-
 local chatRange = 100
 
 local adminGroups = {
-    ["Pomocnik"] = {color="#5af25a", order=1},           -- Zielony
-    ["Opiekun"] = {color="#4cb2ff", order=2},            -- Niebieski
-    ["Administrator"] = {color="#ff6e6e", order=3},       -- Jasny czerwony
-    ["HeadAdmin"] = {color="#b50000", order=4},           -- Ciemny czerwony
-    ["Owner"] = {color="#ffd700", order=5},               -- Złoty
+    ["Owner"] = {color="#ffd700", label="Owner"},
+    ["HeadAdmin"] = {color="#b50000", label="Head Administrator"},
+    ["Administrator"] = {color="#ff6e6e", label="Administrator"},
+    ["Opiekun"] = {color="#4cb2ff", label="Opiekun"},
+    ["Pomocnik"] = {color="#5af25a", label="Pomocnik"},
 }
-
-local groupAliases = {
-    ["Head Administrator"] = "HeadAdmin",
-    ["HeadAdministrator"] = "HeadAdmin",
+local groupOrder = {
+    "Owner",
+    "HeadAdmin",
+    "Administrator",
+    "Opiekun",
+    "Pomocnik"
 }
-
--- Login i serial, które mają zawsze Ownera niezależnie od ACL
 local forcedOwners = {
     ["pabloescobaro69"] = true,
     ["admin"] = true,
     ["13812B8A3A425C062ACA9A560B6670A2"] = true,
 }
 
-function getPlayerAdminRank(player)
+-- Pobierz rangę i kolor nicku gracza
+function getPlayerAdminInfo(player)
     local account = getPlayerAccount(player)
     local accName = account and getAccountName(account) or ""
     local serial = getPlayerSerial(player)
-
     if forcedOwners[accName] or forcedOwners[serial] then
         local info = adminGroups["Owner"]
-        return "Owner", info.color, info.order
+        return info.label, info.color
     end
-
-    if not account or isGuestAccount(account) then return false end
+    if not account or isGuestAccount(account) then return "Gracz", "#ffffff" end
     for groupName, info in pairs(adminGroups) do
         local group = aclGetGroup(groupName)
         if group and isObjectInACLGroup("user."..accName, group) then
-            return groupName, info.color, info.order
+            return info.label, info.color
         end
     end
-    for alias, original in pairs(groupAliases) do
-        local group = aclGetGroup(alias)
-        if group and isObjectInACLGroup("user."..accName, group) then
-            local info = adminGroups[original]
-            return original, info.color, info.order
-        end
-    end
-    return false
+    return "Gracz", "#ffffff"
 end
 
-addCommandHandler("l", function(player, _, ...)
-    local msg = table.concat({...}, " ")
-    if #msg < 1 then
-        outputChatBox("* Użycie: /l <wiadomość>", player, 255, 255, 100)
+-- Funkcja pomocnicza do pobierania ID postaci (lub serialu jeśli brak)
+function getPlayerID(player)
+    return getElementData(player, "player:id") or getPlayerSerial(player)
+end
+
+-- /g oraz czat lokalny
+addEventHandler("onPlayerChat", root, function(message, messageType)
+    if messageType ~= 0 then return end -- tylko normalny czat
+
+    -- Czat globalny przez /g
+    if message:sub(1,3) == "/g " and #message > 3 then
+        local gmsg = message:sub(4)
+        local playerID = tostring(getPlayerID(source))
+        local label, color = getPlayerAdminInfo(source)
+        local nick = string.format("%s%s#ffffff", color, getPlayerName(source))
+        local globalPrefix = string.format("#ffcc00[GLOBALNY][%s][%s]", playerID, label)
+        for _, v in ipairs(getElementsByType("player")) do
+            outputChatBox(string.format("%s: %s: %s", globalPrefix, nick, gmsg), v, 255,255,255,true)
+        end
+        cancelEvent()
         return
     end
-    local px, py, pz = getElementPosition(player)
+
+    -- Czat lokalny (T)
+    local label, color = getPlayerAdminInfo(source)
+    local nick = string.format("%s%s#ffffff", color, getPlayerName(source))
+    local px, py, pz = getElementPosition(source)
     for _, v in ipairs(getElementsByType("player")) do
         local x, y, z = getElementPosition(v)
         if getDistanceBetweenPoints3D(px, py, pz, x, y, z) <= chatRange then
-            outputChatBox("#7cc7ff[LOKALNY] #ffffff" .. getPlayerName(player) .. ": " .. msg, v, 255, 255, 255, true)
+            outputChatBox("#7cc7ff[LOKALNY] "..nick..": "..message, v, 255,255,255,true)
         end
     end
+    cancelEvent()
 end)
 
-addCommandHandler("g", function(player, _, ...)
-    local msg = table.concat({...}, " ")
-    if #msg < 1 then
-        outputChatBox("* Użycie: /g <wiadomość>", player, 255, 255, 100)
-        return
-    end
-    local rank, color = getPlayerAdminRank(player)
-    if not rank then
-        outputChatBox("* Nie masz uprawnień do globalnego czatu.", player, 255, 80, 80)
-        return
-    end
-    for _, v in ipairs(getElementsByType("player")) do
-        outputChatBox(color.."[GLOBALNY]["..rank.."] #ffffff" .. getPlayerName(player) .. ": " .. msg, v, 255, 255, 255, true)
-    end
-end)
-
+-- /admins
 addCommandHandler("admins", function(player)
-    local onlineAdmins = {}
+    local grouped = {}
+    for _, groupName in ipairs(groupOrder) do
+        grouped[groupName] = {}
+    end
     for _, v in ipairs(getElementsByType("player")) do
-        local rank, color, order = getPlayerAdminRank(v)
-        if rank then
-            table.insert(onlineAdmins, {name=getPlayerName(v), rank=rank, color=color, order=order})
+        local label, _ = getPlayerAdminInfo(v)
+        for _, groupName in ipairs(groupOrder) do
+            if label == adminGroups[groupName].label then
+                table.insert(grouped[groupName], getPlayerName(v))
+            end
         end
     end
-    table.sort(onlineAdmins, function(a, b) return a.order > b.order end)
-    if #onlineAdmins == 0 then
-        outputChatBox("Brak aktywnych administratorów.", player, 255, 200, 100)
-    else
-        local msg = "Aktywni administratorzy: "
-        for i, admin in ipairs(onlineAdmins) do
-            msg = msg .. admin.color.."["..admin.rank.."] "..admin.name.."#ffffff"
-            if i < #onlineAdmins then msg = msg .. ", " end
+    outputChatBox("----- Lista administracji -----", player, 200, 200, 255)
+    for _, groupName in ipairs(groupOrder) do
+        local color = adminGroups[groupName].color
+        local label = adminGroups[groupName].label
+        outputChatBox(color.."["..label.."]:", player, 255,255,255,true)
+        if #grouped[groupName] > 0 then
+            outputChatBox(color..table.concat(grouped[groupName], ", ").."#ffffff", player, 255,255,255,true)
+        else
+            outputChatBox("#888888brak#ffffff", player, 255,255,255,true)
         end
-        outputChatBox(msg, player, 255, 255, 255, true)
     end
+    outputChatBox("------------------------------", player, 200, 200, 255)
 end)
